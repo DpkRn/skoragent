@@ -11,12 +11,12 @@ function App() {
     const phone = document.getElementById("phone").value.trim();
     const agentId = document.getElementById("agentId").value.trim();
 
-    const res = await fetch(`http://localhost:8080/api/verify/${agentId}`);
+    // const res = await fetch(`http://localhost:8080/api/verify/${agentId}`);
 
-    if (res.status === 404) {
-      alert("Check your Id please.");
-      return;
-    } 
+    // if (res.status === 404) {
+    //   alert("Check your Id please.");
+    //   return;
+    // } 
 
     if (!phone) {
       alert("Please enter a phone number.");
