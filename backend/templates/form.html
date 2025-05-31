@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Agent Contact</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 450px;
+      margin: 60px auto;
+      padding: 30px;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .container h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: #444;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border 0.3s ease;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #007bff;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .send-otp {
+      background-color: #6c63ff;
+      color: white;
+      margin-bottom: 15px;
+    }
+
+    .send-otp:hover {
+      background-color: #574fd1;
+    }
+
+    .confirm {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .confirm:hover {
+      background-color: #218838;
+    }
+
+    #statusMsg {
+      text-align: center;
+      margin-top: 15px;
+      color: #28a745;
+      font-weight: 600;
+    }
+
+    @media (max-width: 500px) {
+      .container {
+        margin: 30px 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Fill below fields to proceed</h2>
+
+    <form id="otpForm" onsubmit="submitData(event)">
+      <label>Full Name:</label>
+      <input type="text" name="name" id="name" placeholder="Enter your name" required />
+
+      <label>Phone Number:</label>
+      <input type="text" name="phone" id="phoneInput" placeholder="e.g. 9876543210" required />
+
+      <button type="button" class="send-otp" onclick="sendOtp()">Send OTP</button>
+
+      <label>Enter OTP:</label>
+      <input type="text" name="otp" id="otpInput" placeholder="6-digit code" required />
+
+      <!-- Removed the empty confirm button -->
+      <button type="submit" class="confirm">Confirm Interest</button>
+    </form>
+
+    <p id="statusMsg"></p>
+    <p id="resMessage"></p>
+  </div>
+
+  <script>
+    // Get AgentId from backend (embedded into JS safely)
+    const AgentId = "{{.AgentID}}";
+
+    async function sendOtp() {
+      const phone = document.getElementById('phoneInput').value;
+      const name = document.getElementById('name').value;
+
+      if (!phone) {
+        alert("Please enter a phone number first.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("phone", phone);
+      formData.append("name", name);
+      formData.append("agentId", AgentId);
+
+      const res = await fetch("/api/send-otp", {
+        method: "POST",
+        body: formData
+      });
+
+      const text = await res.text();
+      document.getElementById("statusMsg").innerText = text;
+    }
+
+    async function submitData(event) {
+      event.preventDefault(); // Prevent form submission
+
+      const phone = document.getElementById('phoneInput').value;
+      const name = document.getElementById('name').value;
+      const otp = document.getElementById('otpInput').value;
+
+      const formData = new FormData();
+      formData.append("phone", phone);
+      formData.append("name", name);
+      formData.append("otp", otp);
+      formData.append("agentId", AgentId);
+
+      const res = await fetch("/api/confirm", {
+        method: "POST",
+        body: formData
+      });
+
+      const text = await res.text();
+      document.getElementById("resMessage").innerText = text;
+    }
+  </script>
+
+</body>
+</html>
