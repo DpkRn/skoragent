@@ -31,12 +31,7 @@ function App() {
 
     // Your custom message
     const message =
-      encodeURIComponent(`Hello! This is a message from your agent.
-      Please fill the form to proceed!
-
-      http://localhost:8080/api/${agentId}
-
-      `);
+      encodeURIComponent(`Hello! This is a message from your agent.\nPlease fill the form to proceed!\n\nhttp://www.localhost:8080/api/${agentId}`);
 
     // WhatsApp URL
     const whatsappUrl = `https://wa.me/${formattedPhone}?text=${message}`;
